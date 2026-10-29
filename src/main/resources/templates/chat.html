@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Chat')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+<main class="container py-4" style="max-width: 760px;" id="chat" th:attr="data-id=${s.idSolicitud}">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <h4 class="mb-0" th:text="${s.alojamiento.titulo}"></h4>
+      <div class="small text-muted">Conversación con <b th:text="${otro.nombreUsuario}"></b>
+        <span th:if="${s.fechaInicio != null}" th:text="' · ' + ${#temporals.format(s.fechaInicio,'dd/MM/yyyy')} + ' → ' + ${#temporals.format(s.fechaFin,'dd/MM/yyyy')}"></span></div>
+    </div>
+    <span class="badge" th:classappend="${s.estado.name() == 'ACEPTADA'} ? 'text-bg-success' : (${s.estado.name() == 'PENDIENTE'} ? 'text-bg-warning' : 'text-bg-secondary')" th:text="${s.estado}"></span>
+  </div>
+  <div class="card"><div class="card-body caja-chat" id="caja-chat">
+    <div th:replace="~{fragments/mensajes :: lista}"></div>
+  </div></div>
+  <form th:action="@{/chat/{id}/enviar(id=${s.idSolicitud})}" method="post" class="d-flex gap-2 mt-3">
+    <input class="form-control" name="contenido" maxlength="1000" required autocomplete="off" placeholder="Escribe un mensaje…">
+    <button class="btn btn-primary" type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+  </form>
+
+  <div class="card mt-4" id="calificar" th:if="${s.estado.name() == 'ACEPTADA' and !yaCalifico}">
+    <div class="card-body">
+      <h6>Califica a <span th:text="${otro.nombreUsuario}"></span></h6>
+      <form th:action="@{/chat/{id}/calificar(id=${s.idSolicitud})}" method="post" class="row g-2">
+        <div class="col-auto"><select class="form-select" name="puntuacion" required>
+          <option value="">Estrellas…</option>
+          <option th:each="n : ${#numbers.sequence(5,1,-1)}" th:value="${n}" th:text="${n} + ' ★'"></option></select></div>
+        <div class="col"><input class="form-control" name="comentario" maxlength="500" placeholder="Comentario (opcional)"></div>
+        <div class="col-auto"><button class="btn btn-outline-primary" type="submit">Enviar</button></div>
+      </form>
+    </div>
+  </div>
+  <p class="small text-muted mt-3" th:if="${s.estado.name() == 'ACEPTADA' and yaCalifico}">Ya calificaste esta solicitud.</p>
+</main>
+<footer th:replace="~{fragments/layout :: foot}"></footer>
+<script th:src="@{/js/chat.js}"></script>
+</body>
+</html>

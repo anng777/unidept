@@ -1,0 +1,51 @@
+:root { --uni-primary: #1d4ed8; --uni-dark: #0f2a66; }
+body { font-family: 'Poppins', system-ui, sans-serif; background: #f5f7fb; }
+.unidept-nav { background: linear-gradient(90deg, var(--uni-dark), var(--uni-primary)); }
+.btn-primary { background: var(--uni-primary); border-color: var(--uni-primary); }
+.hero { background: linear-gradient(135deg, var(--uni-dark), var(--uni-primary)); }
+
+/* ---- Tarjetas de búsqueda: estructura idéntica en todas ---- */
+.card-alojamiento { overflow: hidden; transition: transform .15s ease, box-shadow .15s ease; }
+.card-alojamiento:hover { transform: translateY(-3px); box-shadow: 0 .75rem 1.5rem rgba(0,0,0,.12) !important; }
+.card-foto { height: 200px; object-fit: cover; width: 100%; }
+.titulo-2l { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.9em; line-height: 1.45; }
+.fila-distancia { min-height: 2.6em; }           /* reserva el espacio aunque no haya distancia */
+.fila-etiquetas { display: flex; flex-wrap: wrap; gap: .35rem; min-height: 3.6em; align-content: flex-start; }
+.card-alojamiento .btn.mt-auto { margin-top: auto !important; }
+
+/* ---- Estado disponible / ocupado ---- */
+.badge-estado { font-weight: 500; }
+.badge-estado.libre { background: #dcfce7; color: #166534; }
+.badge-estado.ocupado { background: #fee2e2; color: #991b1b; }
+.leyenda { display: inline-block; width: .9rem; height: .9rem; border-radius: 50%; vertical-align: middle; }
+.leyenda.ocupado { background: rgba(220,53,69,.28); border: 1px solid rgba(220,53,69,.55); }
+.leyenda.libre { background: #fff; border: 1px solid #adb5bd; }
+
+/* ---- Calendario: círculo rojo suave en fechas ocupadas ---- */
+.flatpickr-calendar.inline { box-shadow: none; border: 1px solid #dee2e6; margin: 0 auto; max-width: 100%; }
+.flatpickr-day.ocupado,
+.flatpickr-day.ocupado.flatpickr-disabled,
+.flatpickr-day.ocupado.flatpickr-disabled:hover {
+  background: rgba(220, 53, 69, .18);
+  border-color: rgba(220, 53, 69, .35);
+  color: #842029;
+  border-radius: 50%;
+  cursor: not-allowed;
+}
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange { background: var(--uni-primary); border-color: var(--uni-primary); }
+
+/* ---- Mapas ---- */
+.mapa-detalle { height: 320px; width: 100%; }
+.foto-detalle { height: 380px; object-fit: cover; }
+
+/* ---- Chat ---- */
+.caja-chat { max-height: 55vh; min-height: 240px; overflow-y: auto; background: #fafbff; }
+.burbuja { max-width: 78%; padding: .5rem .75rem; border-radius: 1rem; }
+.burbuja.mia { background: var(--uni-primary); color: #fff; border-bottom-right-radius: .25rem; }
+.burbuja.otra { background: #e9edf7; border-bottom-left-radius: .25rem; }
+.burbuja .hora { font-size: .7rem; opacity: .7; text-align: right; }
+
+/* ---- Inicio ---- */
+.hero-panel { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); border-radius: 1rem; padding: 1.75rem; backdrop-filter: blur(4px); }
+.paso { width: 64px; height: 64px; margin: 0 auto .75rem; border-radius: 50%; display: grid; place-items: center; font-size: 1.5rem; background: #e0e9ff; color: var(--uni-primary); }
+.cta-arrendador { background: linear-gradient(135deg, #0f2a66, #1d4ed8); }

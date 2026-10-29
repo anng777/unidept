@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Publicaciones')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+<main class="container py-4">
+  <a th:href="@{/admin}" class="small">&larr; Panel</a>
+  <h3 class="my-2">Publicaciones</h3>
+  <form th:action="@{/admin/publicaciones}" method="get" class="d-flex gap-2 mb-3" style="max-width: 360px;">
+    <select class="form-select" name="estado" onchange="this.form.submit()">
+      <option value="">Todas</option>
+      <option th:each="e : ${estados}" th:value="${e.name()}" th:text="${e}" th:selected="${e.name() == estadoSel}"></option>
+    </select>
+  </form>
+  <div class="table-responsive"><table class="table align-middle">
+    <thead><tr><th>#</th><th>Título</th><th>Arrendador</th><th>Distrito</th><th>Precio</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+      <tr th:each="a : ${alojamientos}">
+        <td th:text="${a.idAlojamiento}"></td>
+        <td><a th:href="@{/alojamientos/{id}(id=${a.idAlojamiento})}" th:text="${a.titulo}"></a></td>
+        <td th:text="${a.arrendador.nombreUsuario}"></td><td th:text="${a.distrito}"></td>
+        <td th:text="'S/ ' + ${#numbers.formatDecimal(a.precioMensual,1,'COMMA',0,'POINT')}"></td>
+        <td><span class="badge" th:classappend="${a.estadoPublicacion.name() == 'APROBADA'} ? 'text-bg-success' : (${a.estadoPublicacion.name() == 'PENDIENTE'} ? 'text-bg-warning' : 'text-bg-danger')" th:text="${a.estadoPublicacion}"></span></td>
+        <td class="text-end text-nowrap">
+          <form th:if="${a.estadoPublicacion.name() != 'APROBADA'}" th:action="@{/admin/publicaciones/{id}/estado(id=${a.idAlojamiento})}" method="post" class="d-inline">
+            <input type="hidden" name="estado" value="APROBADA"><button class="btn btn-sm btn-success">Aprobar</button></form>
+          <form th:if="${a.estadoPublicacion.name() != 'RECHAZADA'}" th:action="@{/admin/publicaciones/{id}/estado(id=${a.idAlojamiento})}" method="post" class="d-inline">
+            <input type="hidden" name="estado" value="RECHAZADA"><button class="btn btn-sm btn-outline-danger">Rechazar</button></form>
+        </td>
+      </tr>
+    </tbody></table></div>
+</main>
+<footer th:replace="~{fragments/layout :: foot}"></footer>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Mis solicitudes')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+<main class="container py-4">
+  <h3 class="mb-3">Mis solicitudes</h3>
+  <div class="alert alert-info" th:if="${#lists.isEmpty(solicitudes)}">Aún no has enviado solicitudes. <a th:href="@{/alojamientos}">Busca un alojamiento</a>.</div>
+  <div class="list-group">
+    <div class="list-group-item" th:each="s : ${solicitudes}">
+      <div class="d-flex justify-content-between flex-wrap gap-2">
+        <div>
+          <a class="fw-semibold" th:href="@{/alojamientos/{id}(id=${s.alojamiento.idAlojamiento})}" th:text="${s.alojamiento.titulo}"></a>
+          <div class="small text-muted">
+            <span th:if="${s.fechaInicio != null}" th:text="${#temporals.format(s.fechaInicio,'dd/MM/yyyy')} + ' → ' + ${#temporals.format(s.fechaFin,'dd/MM/yyyy')}"></span>
+            · Arrendador: <span th:text="${s.arrendador.nombreUsuario}"></span></div>
+          <div class="small mt-1">
+            <span class="badge" th:classappend="${s.pagado} ? 'text-bg-success' : 'text-bg-secondary'">
+              <i class="fa-solid fa-receipt me-1"></i>
+              <span th:text="${s.pagado} ? 'Reserva pagada' : 'Pago pendiente'"></span></span>
+            <span class="text-muted" th:if="${s.montoPago != null}">
+              S/ <span th:text="${#numbers.formatDecimal(s.montoPago, 1, 'COMMA', 2, 'POINT')}"></span>
+              <span th:if="${s.metodoPago != null}" th:text="${'· ' + s.metodoPago}"></span></span>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge" th:classappend="${s.estado.name() == 'ACEPTADA'} ? 'text-bg-success' : (${s.estado.name() == 'PENDIENTE'} ? 'text-bg-warning' : 'text-bg-secondary')" th:text="${s.estado}"></span>
+          <a class="btn btn-sm btn-outline-primary" th:href="@{/chat/{id}(id=${s.idSolicitud})}"><i class="fa-regular fa-comments me-1"></i><span th:text="${s.estado.name() == 'ACEPTADA'} ? 'Chat / Calificar' : 'Chat'">Chat</span>
+            <span class="badge bg-danger" th:if="${noLeidos[s.idSolicitud] > 0}" th:text="${noLeidos[s.idSolicitud]}"></span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer th:replace="~{fragments/layout :: foot}"></footer>
+</body>
+</html>

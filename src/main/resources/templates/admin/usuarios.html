@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Usuarios')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+<main class="container py-4">
+  <a th:href="@{/admin}" class="small">&larr; Panel</a>
+  <h3 class="my-2">Usuarios</h3>
+  <div class="table-responsive"><table class="table align-middle">
+    <thead><tr><th>#</th><th>Nombre</th><th>Usuario</th><th>Correo</th><th>Rol</th><th>Verif.</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+      <tr th:each="u : ${usuarios}">
+        <td th:text="${u.idUsuario}"></td><td th:text="${u.nombreCompleto}"></td><td th:text="${u.nombreUsuario}"></td>
+        <td th:text="${u.email}"></td><td th:text="${u.tipoUsuario}"></td>
+        <td><i class="fa-solid" th:classappend="${u.verificado} ? 'fa-circle-check text-success' : 'fa-circle-xmark text-muted'"></i></td>
+        <td><span class="badge" th:classappend="${u.activo} ? 'text-bg-success' : 'text-bg-danger'" th:text="${u.activo} ? 'Activo' : 'Suspendido'"></span></td>
+        <td class="text-end">
+          <form th:if="${u.tipoUsuario.name() != 'ADMINISTRADOR'}" th:action="@{/admin/usuarios/{id}/activo(id=${u.idUsuario})}" method="post" class="m-0">
+            <input type="hidden" name="valor" th:value="${!u.activo}">
+            <button class="btn btn-sm" th:classappend="${u.activo} ? 'btn-outline-danger' : 'btn-outline-success'" th:text="${u.activo} ? 'Suspender' : 'Reactivar'"></button></form>
+        </td>
+      </tr>
+    </tbody></table></div>
+</main>
+<footer th:replace="~{fragments/layout :: foot}"></footer>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Disponibilidad')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+<main class="container py-4" id="disp" th:attr="data-id=${a.idAlojamiento}">
+  <a th:href="@{/mis-alojamientos}" class="small">&larr; Mis alojamientos</a>
+  <h3 class="mt-2" th:text="'Disponibilidad: ' + ${a.titulo}"></h3>
+  <div class="row g-4 mt-1">
+    <div class="col-md-5">
+      <div class="card"><div class="card-body">
+        <h6>Calendario <span class="small text-muted">(<span class="leyenda ocupado"></span> ocupado)</span></h6>
+        <div id="calendario"></div>
+      </div></div>
+    </div>
+    <div class="col-md-7">
+      <div class="card mb-3"><div class="card-body">
+        <h6>Estado general</h6>
+        <form th:action="@{/mis-alojamientos/{id}/disponible(id=${a.idAlojamiento})}" method="post" class="d-flex align-items-center gap-2">
+          <span th:text="${a.disponible} ? 'Aceptando solicitudes' : 'Marcado como OCUPADO (no recibe solicitudes)'"></span>
+          <input type="hidden" name="valor" th:value="${!a.disponible}">
+          <button class="btn btn-sm" th:classappend="${a.disponible} ? 'btn-outline-danger' : 'btn-outline-success'" type="submit"
+                  th:text="${a.disponible} ? 'Marcar como ocupado' : 'Marcar como disponible'"></button>
+        </form>
+      </div></div>
+      <div class="card mb-3"><div class="card-body">
+        <h6>Marcar fechas como ocupadas</h6>
+        <form th:action="@{/alojamientos/{id}/disponibilidad/agregar(id=${a.idAlojamiento})}" method="post" class="row g-2">
+          <div class="col-6"><input class="form-control" type="date" name="desde" th:min="${hoy}" required></div>
+          <div class="col-6"><input class="form-control" type="date" name="hasta" th:min="${hoy}" required></div>
+          <div class="col-12"><input class="form-control" name="nota" maxlength="200" placeholder="Nota (opcional)"></div>
+          <div class="col-12"><button class="btn btn-primary" type="submit">Agregar rango</button></div>
+        </form>
+      </div></div>
+      <div class="card"><div class="card-body">
+        <h6>Rangos ocupados</h6>
+        <p class="text-muted small" th:if="${#lists.isEmpty(rangos)}">No hay rangos ocupados.</p>
+        <ul class="list-group">
+          <li class="list-group-item d-flex justify-content-between align-items-center" th:each="o : ${rangos}">
+            <span><span th:text="${#temporals.format(o.fechaInicio,'dd/MM/yyyy')} + ' → ' + ${#temporals.format(o.fechaFin,'dd/MM/yyyy')}"></span>
+              <span class="small text-muted ms-2" th:text="${o.nota}"></span></span>
+            <form th:action="@{/alojamientos/{id}/disponibilidad/{o}/eliminar(id=${a.idAlojamiento},o=${o.idOcupacion})}" method="post" class="m-0">
+              <button class="btn btn-sm btn-outline-secondary" type="submit">Liberar</button></form>
+          </li>
+        </ul>
+      </div></div>
+    </div>
+  </div>
+</main>
+<footer th:replace="~{fragments/layout :: foot}"></footer>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js"></script>
+<script th:src="@{/js/detalle.js}"></script>
+</body>
+</html>

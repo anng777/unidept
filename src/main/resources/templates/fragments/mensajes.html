@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="lista" id="lista-mensajes">
+  <p class="text-center text-muted small my-4" th:if="${#lists.isEmpty(mensajes)}">Aún no hay mensajes.</p>
+  <div th:each="m : ${mensajes}" class="d-flex mb-2" th:classappend="${m.remitente.idUsuario == yo.idUsuario} ? 'justify-content-end' : 'justify-content-start'">
+    <div class="burbuja" th:classappend="${m.remitente.idUsuario == yo.idUsuario} ? 'mia' : 'otra'">
+      <div class="small fw-semibold" th:text="${m.remitente.nombreUsuario}">usuario</div>
+      <div th:text="${m.contenido}" style="white-space: pre-wrap;">texto</div>
+      <div class="hora" th:text="${#temporals.format(m.fechaEnvio,'dd/MM HH:mm')}">hora</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

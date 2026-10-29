@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Buscar alojamiento')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+<main class="container py-4">
+  <form th:action="@{/alojamientos}" method="get" class="card card-body shadow-sm mb-4">
+    <div class="row g-3 align-items-end">
+      <div class="col-12 col-md-4"><label class="form-label small" for="f-uni">Universidad</label>
+        <select class="form-select" id="f-uni" name="universidad">
+          <option value="">Todas</option>
+          <option th:each="u : ${universidades}" th:value="${u.idUniversidad}" th:text="${u.nombre}" th:selected="${uniSel != null and uniSel == u.idUniversidad}"></option>
+        </select></div>
+      <div class="col-6 col-md-2"><label class="form-label small" for="f-tipo">Tipo</label>
+        <select class="form-select" id="f-tipo" name="tipo">
+          <option value="">Todos</option>
+          <option th:each="t : ${tipos}" th:value="${t.name()}" th:text="${t.name() == 'DEPARTAMENTO' ? 'Departamento' : 'Habitación'}" th:selected="${t.name() == tipoSel}"></option>
+        </select></div>
+      <div class="col-6 col-md-2"><label class="form-label small" for="f-dist">Distrito</label>
+        <input class="form-control" id="f-dist" name="distrito" th:value="${distrito}"></div>
+      <div class="col-6 col-md-2"><label class="form-label small" for="f-min">Precio mín. (S/)</label>
+        <input class="form-control" id="f-min" name="precioMin" type="number" min="0" step="1" th:value="${precioMin}"></div>
+      <div class="col-6 col-md-2"><label class="form-label small" for="f-max">Precio máx. (S/)</label>
+        <input class="form-control" id="f-max" name="precioMax" type="number" min="0" step="1" th:value="${precioMax}"></div>
+      <div class="col-12 col-md-6 d-flex flex-wrap gap-3">
+        <div class="form-check"><input class="form-check-input" type="checkbox" name="roommates" value="true" id="f-room" th:checked="${roommates}"><label class="form-check-label" for="f-room">Admite roommates</label></div>
+        <div class="form-check"><input class="form-check-input" type="checkbox" name="mascotas" value="true" id="f-pet" th:checked="${mascotas}"><label class="form-check-label" for="f-pet">Admite mascotas</label></div>
+        <div class="form-check"><input class="form-check-input" type="checkbox" name="soloDisponibles" value="true" id="f-disp" th:checked="${soloDisponibles}"><label class="form-check-label" for="f-disp">Solo disponibles</label></div>
+      </div>
+      <div class="col-6 col-md-2"><label class="form-label small" for="f-orden">Ordenar</label>
+        <select class="form-select" id="f-orden" name="orden">
+          <option value="" th:selected="${orden == null or orden == ''}">Más cercano</option>
+          <option value="precio_asc" th:selected="${orden == 'precio_asc'}">Precio ↑</option>
+          <option value="precio_desc" th:selected="${orden == 'precio_desc'}">Precio ↓</option>
+        </select></div>
+      <div class="col-12 col-md-4 d-flex gap-2">
+        <button class="btn btn-primary flex-fill" type="submit"><i class="fa-solid fa-filter me-1"></i>Filtrar</button>
+        <a class="btn btn-outline-secondary flex-fill" th:href="@{/alojamientos}">Limpiar filtros</a>
+      </div>
+    </div>
+  </form>
+
+  <div class="alert alert-info small" th:if="${yo == null or !yo.verificado}">
+    <i class="fa-solid fa-lock me-1"></i>Para ver la dirección exacta, el mapa y los datos del arrendador inicia sesión con una cuenta verificada. Las distancias se muestran aproximadas.
+  </div>
+  <p class="text-muted" th:text="${#lists.size(alojamientos)} + ' alojamiento(s) encontrado(s)'"></p>
+  <div class="alert alert-warning" th:if="${#lists.isEmpty(alojamientos)}">No hay alojamientos con esos filtros.</div>
+
+  <!-- Todas las tarjetas comparten la misma estructura: imagen fija, cuerpo flexible y botón siempre al fondo (mt-auto) -->
+  <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+    <div class="col" th:each="a : ${alojamientos}">
+      <div th:replace="~{fragments/tarjeta :: tarjeta(${a}, ${uniSel})}"></div>
+    </div>
+  </div>
+</main>
+<footer th:replace="~{fragments/layout :: foot}"></footer>
+</body>
+</html>

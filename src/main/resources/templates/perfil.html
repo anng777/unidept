@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Mi perfil')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+<main class="container py-4" style="max-width: 720px;">
+  <div class="card mb-3"><div class="card-body">
+    <h4><i class="fa-solid fa-circle-user me-2"></i><span th:text="${perfil.nombreCompleto}"></span>
+      <i class="fa-solid fa-circle-check text-primary" th:if="${perfil.verificado}" title="Verificado por RENIEC"></i></h4>
+    <div class="text-muted" th:text="${perfil.tipoUsuario.name().substring(0,1) + perfil.tipoUsuario.name().substring(1).toLowerCase()}"></div>
+    <hr>
+    <div><b>Correo:</b> <span th:text="${perfil.email}"></span></div>
+    <div><b>Celular:</b> <span th:text="${perfil.telefono}"></span></div>
+    <form th:action="@{/perfil/usuario}" method="post" class="row g-2 mt-2 align-items-end">
+      <div class="col"><label class="form-label small mb-0" for="nombreUsuario">Nombre de usuario</label>
+        <input class="form-control" id="nombreUsuario" name="nombreUsuario" th:value="${perfil.nombreUsuario}" pattern="[A-Za-z0-9._]{4,20}" required></div>
+      <div class="col-auto"><button class="btn btn-outline-primary" type="submit">Cambiar</button></div>
+    </form>
+  </div></div>
+  <div class="card"><div class="card-body">
+    <h6><i class="fa-solid fa-star text-warning me-1"></i>Reseñas recibidas:
+      <span th:text="${resumen.total gt 0 ? resumen.promedio + ' / 5 (' + resumen.total + ')' : 'ninguna aún'}"></span></h6>
+    <div class="border-top pt-2 mt-2" th:each="r : ${resenas}">
+      <div class="small"><b th:text="${r.calificador.nombreUsuario}"></b> · <span th:text="${r.puntuacion} + '/5'"></span>
+        · <span class="text-muted" th:text="${#temporals.format(r.fecha,'dd/MM/yyyy')}"></span></div>
+      <div class="text-muted small" th:text="${r.comentario}"></div>
+    </div>
+  </div></div>
+</main>
+<footer th:replace="~{fragments/layout :: foot}"></footer>
+</body>
+</html>

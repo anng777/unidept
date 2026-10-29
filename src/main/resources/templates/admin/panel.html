@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Administración')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+<main class="container py-4">
+  <h3 class="mb-3"><i class="fa-solid fa-user-shield me-2"></i>Panel de administración</h3>
+  <div class="row g-3">
+    <div class="col-md-4"><a class="card text-decoration-none h-100" th:href="@{/admin/usuarios}"><div class="card-body text-center">
+      <div class="display-6" th:text="${totalUsuarios}">0</div><div>Usuarios</div></div></a></div>
+    <div class="col-md-4"><a class="card text-decoration-none h-100" th:href="@{/admin/publicaciones(estado='PENDIENTE')}"><div class="card-body text-center">
+      <div class="display-6" th:text="${pendientes}">0</div><div>Publicaciones por revisar</div></div></a></div>
+    <div class="col-md-4"><a class="card text-decoration-none h-100" th:href="@{/admin/reportes}"><div class="card-body text-center">
+      <div class="display-6" th:text="${reportesPendientes}">0</div><div>Reportes pendientes</div></div></a></div>
+  </div>
+</main>
+<footer th:replace="~{fragments/layout :: foot}"></footer>
+</body>
+</html>

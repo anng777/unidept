@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Reportes')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+<main class="container py-4">
+  <a th:href="@{/admin}" class="small">&larr; Panel</a>
+  <h3 class="my-2">Reportes</h3>
+  <p class="text-muted" th:if="${#lists.isEmpty(reportes)}">No hay reportes.</p>
+  <div class="list-group">
+    <div class="list-group-item" th:each="r : ${reportes}">
+      <div class="d-flex justify-content-between gap-3">
+        <div>
+          <div class="small text-muted" th:text="'Reporte #' + ${r.idReporte} + ' · por ' + ${r.reportante.nombreUsuario} + ' · ' + ${#temporals.format(r.fecha,'dd/MM/yyyy HH:mm')}"></div>
+          <div th:if="${r.alojamientoReportado != null}">Alojamiento:
+            <a th:href="@{/alojamientos/{id}(id=${r.alojamientoReportado.idAlojamiento})}" th:text="${r.alojamientoReportado.titulo}"></a></div>
+          <div th:if="${r.usuarioReportado != null}">Usuario: <b th:text="${r.usuarioReportado.nombreUsuario}"></b></div>
+          <div class="mt-1" th:text="${r.motivo}" style="white-space: pre-wrap;"></div>
+        </div>
+        <div class="text-end">
+          <span class="badge" th:classappend="${r.estado.name() == 'PENDIENTE'} ? 'text-bg-warning' : 'text-bg-secondary'" th:text="${r.estado}"></span>
+          <form th:if="${r.estado.name() == 'PENDIENTE'}" th:action="@{/admin/reportes/{id}/revisado(id=${r.idReporte})}" method="post" class="mt-2">
+            <button class="btn btn-sm btn-outline-primary">Marcar revisado</button></form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer th:replace="~{fragments/layout :: foot}"></footer>
+</body>
+</html>

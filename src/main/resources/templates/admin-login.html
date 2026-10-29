@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Acceso de administrador')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+<main class="container py-4" style="max-width: 460px;">
+  <div class="card shadow-sm"><div class="card-body p-4">
+    <h4 class="mb-3"><i class="fa-solid fa-user-shield me-2"></i>Acceso de administrador</h4>
+    <form th:action="@{/admin/login}" method="post">
+      <div class="mb-3"><label class="form-label" for="identificador">Correo o nombre de usuario</label>
+        <input class="form-control" id="identificador" name="identificador" required autocomplete="username"></div>
+      <div class="mb-3"><label class="form-label" for="password">Contraseña</label>
+        <input class="form-control" id="password" name="password" type="password" required autocomplete="current-password"></div>
+      <button class="btn btn-primary w-100" type="submit">Entrar</button>
+    </form>
+    <p class="text-center small mt-3 mb-0"><a th:href="@{/login}">Volver al acceso normal</a></p>
+  </div></div>
+</main>
+<footer th:replace="~{fragments/layout :: foot}"></footer>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Inicio')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+
+<header class="hero text-white">
+  <div class="container py-5">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <span class="badge rounded-pill text-bg-warning mb-3"><i class="fa-solid fa-shield-halved me-1"></i>Perfiles verificados con RENIEC</span>
+        <h1 class="display-5 fw-bold">Tu alojamiento, a minutos de tu universidad</h1>
+        <p class="lead opacity-75">Departamentos y habitaciones para estudiantes de Lima, con distancia real, fechas disponibles y arrendadores de confianza.</p>
+        <form th:action="@{/alojamientos}" method="get" class="card card-body shadow border-0 mt-4 text-dark">
+          <div class="row g-2">
+            <div class="col-12 col-md-6">
+              <label class="form-label small mb-1" for="h-uni">Universidad</label>
+              <select id="h-uni" name="universidad" class="form-select">
+                <option value="">Todas</option>
+                <option th:each="u : ${universidades}" th:value="${u.idUniversidad}" th:text="${u.nombre}"></option>
+              </select></div>
+            <div class="col-6 col-md-3">
+              <label class="form-label small mb-1" for="h-tipo">Tipo</label>
+              <select id="h-tipo" name="tipo" class="form-select">
+                <option value="">Cualquiera</option><option value="HABITACION">Habitación</option><option value="DEPARTAMENTO">Departamento</option>
+              </select></div>
+            <div class="col-6 col-md-3">
+              <label class="form-label small mb-1" for="h-max">Hasta (S/)</label>
+              <input id="h-max" name="precioMax" type="number" min="0" step="50" class="form-control" placeholder="Ej. 900"></div>
+            <div class="col-12"><button class="btn btn-primary w-100" type="submit"><i class="fa-solid fa-magnifying-glass me-2"></i>Buscar alojamiento</button></div>
+          </div>
+        </form>
+      </div>
+      <div class="col-lg-5 d-none d-lg-block">
+        <div class="hero-panel">
+          <div class="d-flex align-items-center mb-3"><i class="fa-solid fa-building-columns fa-2x me-3"></i>
+            <div><div class="fw-bold fs-3" th:text="${#lists.size(universidades)}">15</div><div class="small opacity-75">universidades de Lima cubiertas</div></div></div>
+          <div class="d-flex align-items-center mb-3"><i class="fa-solid fa-house fa-2x me-3"></i>
+            <div><div class="fw-bold fs-3" th:text="${totalAlojamientos}">0</div><div class="small opacity-75">alojamientos publicados</div></div></div>
+          <div class="d-flex align-items-center"><i class="fa-solid fa-circle-check fa-2x me-3"></i>
+            <div><div class="fw-bold fs-3" th:text="${totalDisponibles}">0</div><div class="small opacity-75">disponibles ahora</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Destacados -->
+  <section class="container py-5" th:if="${!#lists.isEmpty(destacados)}">
+    <div class="d-flex justify-content-between align-items-end mb-3">
+      <div><h2 class="h3 mb-0">Alojamientos disponibles</h2><div class="text-muted">Lo más reciente, listo para solicitar</div></div>
+      <a th:href="@{/alojamientos}" class="btn btn-outline-primary btn-sm">Ver todos <i class="fa-solid fa-arrow-right ms-1"></i></a>
+    </div>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+      <div class="col" th:each="a : ${destacados}">
+        <div th:replace="~{fragments/tarjeta :: tarjeta(${a}, ${null})}"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cómo funciona -->
+  <section class="bg-white py-5 border-top border-bottom">
+    <div class="container">
+      <h2 class="h3 text-center mb-4">¿Cómo funciona?</h2>
+      <div class="row g-4 text-center">
+        <div class="col-md-3 col-6"><div class="paso"><i class="fa-solid fa-id-card"></i></div><h6>1. Crea tu cuenta</h6><p class="text-muted small">Verificamos tu DNI con RENIEC. Un DNI, una cuenta.</p></div>
+        <div class="col-md-3 col-6"><div class="paso"><i class="fa-solid fa-magnifying-glass-location"></i></div><h6>2. Busca cerca de tu campus</h6><p class="text-muted small">Filtra por precio, roommates, mascotas y disponibilidad.</p></div>
+        <div class="col-md-3 col-6"><div class="paso"><i class="fa-regular fa-calendar-check"></i></div><h6>3. Elige tus fechas</h6><p class="text-muted small">El calendario marca en rojo lo que ya está ocupado.</p></div>
+        <div class="col-md-3 col-6"><div class="paso"><i class="fa-regular fa-comments"></i></div><h6>4. Conversa y reserva</h6><p class="text-muted small">Chatea con el arrendador y califícalo al terminar.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Universidades -->
+  <section class="container py-5">
+    <h2 class="h3 mb-1">Busca por universidad</h2>
+    <p class="text-muted">Te mostramos primero lo más cercano a tu campus.</p>
+    <div class="d-flex flex-wrap gap-2">
+      <a class="btn btn-outline-secondary rounded-pill btn-sm" th:each="u : ${universidades}"
+         th:href="@{/alojamientos(universidad=${u.idUniversidad})}"><i class="fa-solid fa-graduation-cap me-1"></i><span th:text="${u.nombre}"></span></a>
+    </div>
+  </section>
+
+  <!-- Beneficios -->
+  <section class="container pb-5">
+    <div class="row g-4">
+      <div class="col-md-4"><div class="card h-100 border-0 shadow-sm"><div class="card-body">
+        <i class="fa-solid fa-shield-halved fa-2x text-primary mb-2"></i><h5>Confianza</h5>
+        <p class="text-muted mb-0">Cuentas verificadas, reseñas entre estudiantes y arrendadores, y un administrador que revisa publicaciones y reportes.</p></div></div></div>
+      <div class="col-md-4"><div class="card h-100 border-0 shadow-sm"><div class="card-body">
+        <i class="fa-solid fa-location-dot fa-2x text-primary mb-2"></i><h5>Ubicación real</h5>
+        <p class="text-muted mb-0">Mapa con el alojamiento y tu universidad, y distancia calculada desde coordenadas, sin tiempos inventados.</p></div></div></div>
+      <div class="col-md-4"><div class="card h-100 border-0 shadow-sm"><div class="card-body">
+        <i class="fa-solid fa-user-group fa-2x text-primary mb-2"></i><h5>Para estudiantes</h5>
+        <p class="text-muted mb-0">Opciones con roommates, que admiten mascotas, amobladas y con WiFi, a precios pensados para tu bolsillo.</p></div></div></div>
+    </div>
+  </section>
+
+  <!-- Llamado al arrendador -->
+  <section class="cta-arrendador text-white py-5" th:if="${yo == null or yo.tipoUsuario.name() == 'ARRENDADOR'}">
+    <div class="container d-md-flex align-items-center justify-content-between text-center text-md-start">
+      <div><h3 class="mb-1">¿Tienes un cuarto o departamento para alquilar?</h3>
+        <div class="opacity-75">Publícalo gratis y llega a estudiantes verificados. Tú controlas la disponibilidad y las fechas.</div></div>
+      <a class="btn btn-warning btn-lg mt-3 mt-md-0" th:href="${yo == null} ? @{/registro} : @{/alojamientos/nuevo}">Publicar mi alojamiento</a>
+    </div>
+  </section>
+</main>
+<footer th:replace="~{fragments/layout :: foot}"></footer>
+</body>
+</html>

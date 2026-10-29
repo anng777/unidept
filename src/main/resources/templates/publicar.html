@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${editando != null ? 'Editar alojamiento' : 'Publicar alojamiento'})}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+<div th:replace="~{fragments/layout :: flash}"></div>
+<main class="container py-4" style="max-width: 860px;">
+  <h3 class="mb-3" th:text="${editando != null ? 'Editar alojamiento' : 'Publicar alojamiento'}"></h3>
+  <form th:action="@{${accion}}" method="post" th:object="${form}" id="form-publicar">
+    <div class="row g-3">
+      <div class="col-12"><label class="form-label" for="titulo">Título</label>
+        <input class="form-control" id="titulo" th:field="*{titulo}" maxlength="150" required></div>
+      <div class="col-12"><label class="form-label" for="descripcion">Descripción</label>
+        <textarea class="form-control" id="descripcion" th:field="*{descripcion}" rows="4"></textarea>
+        <div class="form-text">No escribas tiempos de caminata: la distancia a cada universidad se calcula sola desde el mapa.</div></div>
+      <div class="col-6 col-md-4"><label class="form-label" for="tipo">Tipo</label>
+        <select class="form-select" id="tipo" th:field="*{tipo}">
+          <option th:each="t : ${tipos}" th:value="${t.name()}" th:text="${t.name() == 'DEPARTAMENTO' ? 'Departamento' : 'Habitación'}"></option></select></div>
+      <div class="col-6 col-md-4"><label class="form-label" for="precioMensual">Precio mensual (S/)</label>
+        <input class="form-control" id="precioMensual" type="number" min="0" step="1" th:field="*{precioMensual}" required></div>
+      <div class="col-6 col-md-4"><label class="form-label" for="capacidad">Capacidad</label>
+        <input class="form-control" id="capacidad" type="number" min="1" max="20" th:field="*{capacidad}"></div>
+      <div class="col-12 col-md-8"><label class="form-label" for="direccion">Dirección</label>
+        <input class="form-control" id="direccion" th:field="*{direccion}" required></div>
+      <div class="col-12 col-md-4"><label class="form-label" for="distrito">Distrito</label>
+        <input class="form-control" id="distrito" th:field="*{distrito}" required></div>
+
+      <div class="col-12">
+        <label class="form-label">Ubicación exacta (obligatoria)</label>
+        <div class="input-group mb-2">
+          <button class="btn btn-outline-secondary" type="button" id="btn-buscar"><i class="fa-solid fa-magnifying-glass me-1"></i>Buscar la dirección en el mapa</button>
+          <input class="form-control" id="enlace-maps" placeholder="…o pega un enlace de Google Maps">
+          <button class="btn btn-outline-secondary" type="button" id="btn-enlace">Usar enlace</button>
+        </div>
+        <div id="mapa-picker" class="mapa-detalle rounded border"></div>
+        <div class="form-text">Haz clic en el mapa o arrastra el marcador hasta la puerta del alojamiento. <span id="coord-texto" class="fw-semibold"></span></div>
+        <div class="small mt-1" id="info-cercana"></div>
+        <input type="hidden" th:field="*{latitud}" id="latitud">
+        <input type="hidden" th:field="*{longitud}" id="longitud">
+      </div>
+
+      <div class="col-12 d-flex flex-wrap gap-4">
+        <div class="form-check"><input class="form-check-input" type="checkbox" th:field="*{amoblado}" id="amoblado"><label class="form-check-label" for="amoblado">Amoblado</label></div>
+        <div class="form-check"><input class="form-check-input" type="checkbox" th:field="*{wifi}" id="wifi"><label class="form-check-label" for="wifi">WiFi</label></div>
+        <div class="form-check"><input class="form-check-input" type="checkbox" th:field="*{admiteRoommates}" id="admiteRoommates"><label class="form-check-label" for="admiteRoommates">Admite roommates</label></div>
+        <div class="form-check"><input class="form-check-input" type="checkbox" th:field="*{admiteMascotas}" id="admiteMascotas"><label class="form-check-label" for="admiteMascotas">Admite mascotas</label></div>
+        <div class="form-check form-switch" th:if="${editando != null}"><input class="form-check-input" type="checkbox" th:field="*{disponible}" id="disponible"><label class="form-check-label" for="disponible">Disponible</label></div>
+      </div>
+      <div class="col-12"><label class="form-label" for="imagenes">Fotos (una URL por línea, hasta 10)</label>
+        <textarea class="form-control" id="imagenes" th:field="*{imagenes}" rows="4" placeholder="https://..."></textarea>
+        <div class="form-text">Si lo dejas vacío se asignan fotos de ejemplo.</div></div>
+      <div class="col-12 d-flex gap-2">
+        <button class="btn btn-primary" type="submit" id="btn-guardar">Guardar</button>
+        <a class="btn btn-outline-secondary" th:href="@{/mis-alojamientos}">Cancelar</a></div>
+    </div>
+  </form>
+</main>
+<footer th:replace="~{fragments/layout :: foot}"></footer>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script th:inline="javascript">
+  window.UNIVERSIDADES = /*[[${universidades}]]*/ [];
+</script>
+<script th:src="@{/js/publicar.js}"></script>
+</body>
+</html>
